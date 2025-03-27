@@ -19,9 +19,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # Make gradlew executable
-      - name: Make gradlew executable
-        run: chmod +x gradlew
 
       - name: Build Fat Jar
         run: ./gradlew :server:shadowJar
