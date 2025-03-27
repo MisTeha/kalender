@@ -24,14 +24,14 @@ jobs:
           java-version: 'java21'
           distribution: 'microsoft'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Build Fat Jar
+        run: ./gradlew :server:shadowJar
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: 'server/build/libs/server-all.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,5 +62,5 @@ jobs:
         with:
           app-name: 'tegevusteplaneerija-server'
           slot-name: 'Production'
-          package: '*.jar'
+          package: 'server-all.jar'
           
