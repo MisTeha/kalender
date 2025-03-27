@@ -3,7 +3,7 @@ name: Build and Deploy to Azure Web App
 on:
   push:
     branches:
-      - 2-database-setup-and-connectivity
+      - main
 
 jobs:
   build:
