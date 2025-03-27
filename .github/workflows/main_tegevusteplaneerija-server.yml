@@ -65,5 +65,5 @@ jobs:
         with:
           app-name: 'tegevusteplaneerija-server'
           slot-name: 'Production'
-          package: 'server-all.jar'
+          package: '*.jar'
           
