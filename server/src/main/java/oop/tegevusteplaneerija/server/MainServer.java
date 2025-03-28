@@ -15,7 +15,7 @@ public class MainServer {
         String envPort = System.getenv("PORT"); // azure teenuses on olemas
         int portnumber = envPort != null ? Integer.parseInt(envPort) : 8080;
         port(portnumber);
-        DatabaseManager dbm = new DatabaseManager("home/server.db");
+        DatabaseManager dbm = new DatabaseManager("/home/server.db");
         try {
             dbm.init();
         } catch (SQLException e) {
