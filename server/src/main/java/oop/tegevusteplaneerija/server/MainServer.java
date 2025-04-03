@@ -37,7 +37,7 @@ public class MainServer {
 
         get("/tere", (req, res) -> {
             res.type("application/json");
-            return "tere";
+            return "teremain";
         }, gson::toJson);
 
         post("/events", (req, res) -> {
