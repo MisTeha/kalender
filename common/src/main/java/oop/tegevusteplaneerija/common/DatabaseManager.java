@@ -11,7 +11,7 @@ public class DatabaseManager {
      * @param dbFilePath faili asukoht
      */
     public DatabaseManager(String dbFilePath) {
-        this.url = "jdbc:sqlite:data/" + dbFilePath;
+        this.url = "jdbc:sqlite:" + dbFilePath;
     }
 
     // järgneb jällegi gpt kirjutatud kood, mis annab ideed, kuidas hakkame kasutama andmebaasi.
