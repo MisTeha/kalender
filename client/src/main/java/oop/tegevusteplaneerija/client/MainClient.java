@@ -19,6 +19,7 @@ import oop.tegevusteplaneerija.common.DatabaseManager;
 import java.sql.SQLException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,30 +37,28 @@ public class MainClient extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws SQLException {
         // Create an event using the common module
         CalendarEvent event1 = new CalendarEvent(
-                2,
                 "Client Meeting",
                 "Discuss UI design",
                 "2:00 PM",
                 "3:00 PM"
         );
         CalendarEvent event2 = new CalendarEvent(
-                3,
                 "foo",
                 "bar",
                 "4:00 PM",
                 "5:00 PM"
         );
 
-        List<Node> event = Arrays.asList(event1, event2).stream().map(Widgets::EventWidget).toList();
+        List<CalendarEvent> event = List.of(event1, event2);
 
         VBox events = new VBox();
         BorderPane root = new BorderPane(events);
 
 
-        events.getChildren().addAll(event);
+        event.stream().forEach(e -> addEvent(e, events));
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem newEventItem = new MenuItem("Add Event");
@@ -69,7 +68,7 @@ public class MainClient extends Application {
                 try {
                     var dialog = new EventDialog(actionEvent, primaryStage);
                     var event = dialog.waitForResult();
-                    if (event != null) events.getChildren().add(Widgets.EventWidget(event));
+                    if (event != null) addEvent(event, events);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -88,5 +87,10 @@ public class MainClient extends Application {
         primaryStage.setTitle("Calendar Client");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private static void addEvent(CalendarEvent e, VBox events) {
+        EventWidgetController c = new EventWidgetController(e);
+        events.getChildren().add(c);
     }
 }

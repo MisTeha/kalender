@@ -45,8 +45,7 @@ public class EventDialogController {
         String start = startField.getText();
         String end = endField.getText();
 
-        // TODO: id loogika
-        var event = new CalendarEvent(ThreadLocalRandom.current().nextInt(), title, desc, start, end);
+        var event = new CalendarEvent(title, desc, start, end);
         result = event;
 
         Stage stage = (Stage) cancelButton.getScene().getWindow();
