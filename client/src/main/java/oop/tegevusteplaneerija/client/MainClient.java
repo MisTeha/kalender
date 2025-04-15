@@ -2,10 +2,12 @@ package oop.tegevusteplaneerija.client;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import oop.tegevusteplaneerija.common.CalendarEvent;
 import javafx.application.Application;
@@ -37,7 +39,7 @@ public class MainClient extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws SQLException {
+    public void start(Stage primaryStage) throws SQLException, IOException {
         // Create an event using the common module
         CalendarEvent event1 = new CalendarEvent(
                 "Client Meeting",
@@ -54,43 +56,17 @@ public class MainClient extends Application {
 
         List<CalendarEvent> event = List.of(event1, event2);
 
-        VBox events = new VBox();
-        BorderPane root = new BorderPane(events);
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("EventsView.fxml"));
+        Pane eventsView = loader.load();
+        EventViewsController cont = loader.getController();
+        Scene scene = new Scene(eventsView);
 
-
-        event.stream().forEach(e -> addEvent(e, events));
-
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem newEventItem = new MenuItem("Add Event");
-        newEventItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    var dialog = new EventDialog(actionEvent, primaryStage);
-                    var event = dialog.waitForResult();
-                    if (event != null) addEvent(event, events);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        contextMenu.getItems().add(newEventItem);
-
-        root.setOnContextMenuRequested(e -> {
-            contextMenu.show(root.getScene().getWindow(), e.getScreenX(), e.getScreenY());
-        });
-
-        Scene scene = new Scene(root, 300, 200);
+        event.stream().forEach(e -> cont.addEvent(e));
 
         DatabaseManager dbm = startDatabase();
         dbm.printAll();
         primaryStage.setTitle("Calendar Client");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    private static void addEvent(CalendarEvent e, VBox events) {
-        EventWidgetController c = new EventWidgetController(e);
-        events.getChildren().add(c);
     }
 }
