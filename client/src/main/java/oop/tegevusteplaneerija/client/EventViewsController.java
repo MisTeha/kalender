@@ -44,7 +44,11 @@ public class EventViewsController {
     }
 
     public void addEvent(CalendarEvent e) {
-        EventWidgetController c = new EventWidgetController(e);
+        EventWidgetController c = new EventWidgetController(e, this);
         events.getChildren().add(c);
+    }
+
+    public void removeEvent(EventWidgetController c) {
+        events.getChildren().remove(c);
     }
 }

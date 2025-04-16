@@ -6,9 +6,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import oop.tegevusteplaneerija.common.CalendarEvent;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-
 public class EventDialogController {
     @FXML
     private TextField titleField;

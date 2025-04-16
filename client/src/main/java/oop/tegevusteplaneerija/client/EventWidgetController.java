@@ -13,6 +13,10 @@ public class EventWidgetController extends VBox {
     @FXML
     private Label titleLabel, descLabel;
 
+    private EventViewsController parent;
+
+    private CalendarEvent e;
+
     public EventWidgetController() {
         FXMLLoader loader = new FXMLLoader(EventWidgetController.class.getClassLoader().getResource("EventWidget.fxml"));
         loader.setRoot(this);
@@ -29,5 +33,16 @@ public class EventWidgetController extends VBox {
         this();
         titleLabel.setText("%s: %s to %s".formatted(e.getTitle(), e.getStartTime(), e.getEndTime()));
         descLabel.setText(e.getDescription());
+        this.e = e;
+    }
+
+    public EventWidgetController(CalendarEvent e, EventViewsController par) {
+        this(e);
+        parent = par;
+    }
+
+    @FXML
+    void remove() {
+        parent.removeEvent(this);
     }
 }

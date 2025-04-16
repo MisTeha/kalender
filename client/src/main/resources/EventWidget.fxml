@@ -11,7 +11,7 @@
             <Label fx:id="titleLabel" minWidth="200"/>
             <Label fx:id="descLabel" minWidth="200"/>
         </VBox>
-        <Button fx:id="doneButton">
+        <Button fx:id="doneButton" onAction="#remove">
             <graphic>
                 <ImageView pickOnBounds="true" preserveRatio="true">
                     <Image url="event-end.png"/>
