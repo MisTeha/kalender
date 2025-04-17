@@ -2,7 +2,9 @@
 
 <?import javafx.scene.layout.*?>
 
+
 <BorderPane fx:id="bPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop.tegevusteplaneerija.client.EventViewsController">
-    <VBox fx:id="events">
-    </VBox>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" fx:id="events"/>
+   </center>
 </BorderPane>
