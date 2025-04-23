@@ -1,12 +1,15 @@
 package oop.tegevusteplaneerija.common;
 
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 public class CalendarEvent {
     private String title;
     private String description;
-    private String startTime; //TODO: replace with proper date types
-    private String endTime;
+    private ZonedDateTime startTime;
+    private ZonedDateTime endTime;
 
-    public CalendarEvent(String title, String description, String startTime, String endTime) {
+    public CalendarEvent(String title, String description, ZonedDateTime startTime, ZonedDateTime endTime) {
         this.title = title;
         this.description = description;
         this.startTime = startTime;
@@ -22,11 +25,11 @@ public class CalendarEvent {
         return description;
     }
 
-    public String getStartTime() {
+    public ZonedDateTime getStartTime() {
         return startTime;
     }
 
-    public String getEndTime() {
+    public ZonedDateTime getEndTime() {
         return endTime;
     }
 

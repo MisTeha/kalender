@@ -15,7 +15,7 @@
                         <Insets />
                      </HBox.margin></Label>
                   <Region minHeight="-Infinity" HBox.hgrow="ALWAYS" />
-                  <TextField fx:id="titleField"/>
+                  <TextField fx:id="titleField" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" top="10.0" />
@@ -28,7 +28,7 @@
                      </HBox.margin>
                   </Label>
                   <Region minHeight="-Infinity" HBox.hgrow="ALWAYS" />
-                  <TextField fx:id="descField"/>
+                  <TextField fx:id="descField" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />
@@ -42,7 +42,22 @@
                      </HBox.margin>
                   </Label>
                   <Region minHeight="-Infinity" HBox.hgrow="ALWAYS" />
-                  <TextField fx:id="startField"/>
+                  <DatePicker fx:id="startDate" />
+                  <Spinner fx:id="startH" maxHeight="-Infinity" maxWidth="70.0">
+                     <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23"/>
+                     </valueFactory>
+                  </Spinner>
+                  <Spinner fx:id="startM" maxWidth="70.0">
+                     <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                     </valueFactory>
+                  </Spinner>
+                  <Spinner fx:id="startS" maxWidth="70.0">
+                     <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                     </valueFactory>
+                  </Spinner>
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />
@@ -56,7 +71,22 @@
                      </HBox.margin>
                   </Label>
                   <Region minHeight="-Infinity" HBox.hgrow="ALWAYS" />
-                  <TextField fx:id="endField"/>
+                  <DatePicker fx:id="endDate" />
+                  <Spinner fx:id="endH" maxHeight="-Infinity" maxWidth="70.0">
+                     <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23"/>
+                     </valueFactory>
+                  </Spinner>
+                  <Spinner fx:id="endM" maxWidth="70.0">
+                     <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                     </valueFactory>
+                  </Spinner>
+                  <Spinner fx:id="endS" maxWidth="70.0">
+                     <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                     </valueFactory>
+                  </Spinner>
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />
@@ -65,12 +95,12 @@
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" text="Cancel" fx:id="cancelButton" onAction="#cancel">
+                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancel" text="Cancel">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" text="OK" fx:id="okButton" onAction="#ok">
+                  <Button fx:id="okButton" mnemonicParsing="false" onAction="#ok" text="OK">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>

@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -21,8 +22,10 @@ import oop.tegevusteplaneerija.common.DatabaseManager;
 import java.sql.SQLException;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class MainClient extends Application {
@@ -44,14 +47,14 @@ public class MainClient extends Application {
         CalendarEvent event1 = new CalendarEvent(
                 "Client Meeting",
                 "Discuss UI design",
-                "2:00 PM",
-                "3:00 PM"
+                ZonedDateTime.parse("2025-04-01T13:00:00+02:00"),
+                ZonedDateTime.parse("2025-04-01T14:00:00+02:00")
         );
         CalendarEvent event2 = new CalendarEvent(
                 "foo",
                 "bar",
-                "4:00 PM",
-                "5:00 PM"
+                ZonedDateTime.parse("2025-04-02T13:00:00+02:00"),
+                ZonedDateTime.parse("2025-04-02T14:00:00+02:00")
         );
 
         List<CalendarEvent> event = List.of(event1, event2);
