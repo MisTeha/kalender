@@ -1,5 +1,7 @@
 package oop.tegevusteplaneerija.client;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,6 +21,12 @@ public class Widgets {
 
         Image image = new Image(Widgets.class.getClassLoader().getResourceAsStream("event-end.png"));
         Button button = new IconButton(image, image.getHeight(), image.getWidth());
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+            }
+        });
 
         VBox info = new VBox(label, text);
         return new HBox(info, button);

@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import oop.tegevusteplaneerija.common.CalendarEvent;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 public class EventDialog {
     private Stage dialog;

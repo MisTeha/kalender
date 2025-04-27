@@ -2,10 +2,13 @@ package oop.tegevusteplaneerija.client;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import oop.tegevusteplaneerija.common.CalendarEvent;
 import javafx.application.Application;
@@ -19,7 +22,10 @@ import oop.tegevusteplaneerija.common.DatabaseManager;
 import java.sql.SQLException;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class MainClient extends Application {
@@ -36,52 +42,29 @@ public class MainClient extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws SQLException, IOException {
         // Create an event using the common module
         CalendarEvent event1 = new CalendarEvent(
-                2,
                 "Client Meeting",
                 "Discuss UI design",
-                "2:00 PM",
-                "3:00 PM"
+                ZonedDateTime.parse("2025-04-01T13:00:00+02:00"),
+                ZonedDateTime.parse("2025-04-01T14:00:00+02:00")
         );
         CalendarEvent event2 = new CalendarEvent(
-                3,
                 "foo",
                 "bar",
-                "4:00 PM",
-                "5:00 PM"
+                ZonedDateTime.parse("2025-04-02T13:00:00+02:00"),
+                ZonedDateTime.parse("2025-04-02T14:00:00+02:00")
         );
 
-        List<Node> event = Arrays.asList(event1, event2).stream().map(Widgets::EventWidget).toList();
+        List<CalendarEvent> event = List.of(event1, event2);
 
-        VBox events = new VBox();
-        BorderPane root = new BorderPane(events);
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("EventsView.fxml"));
+        Pane eventsView = loader.load();
+        EventViewsController cont = loader.getController();
+        Scene scene = new Scene(eventsView);
 
-
-        events.getChildren().addAll(event);
-
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem newEventItem = new MenuItem("Add Event");
-        newEventItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    var dialog = new EventDialog(actionEvent, primaryStage);
-                    var event = dialog.waitForResult();
-                    if (event != null) events.getChildren().add(Widgets.EventWidget(event));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        contextMenu.getItems().add(newEventItem);
-
-        root.setOnContextMenuRequested(e -> {
-            contextMenu.show(root.getScene().getWindow(), e.getScreenX(), e.getScreenY());
-        });
-
-        Scene scene = new Scene(root, 300, 200);
+        event.stream().forEach(e -> cont.addEvent(e));
 
         DatabaseManager dbm = startDatabase();
         dbm.printAll();
