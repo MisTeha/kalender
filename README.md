@@ -11,3 +11,9 @@ Funktsionaalsus:
     - Muudatustest antakse teada e-posti teel.
 - Ligipääsu ülesannetele (ja kasutajakontosid, turvalisust) tagab server.
 - Saab subscribeida online ical kalendritele ja updateida neid
+
+ ## Etappide lühikokkuvõtted
+ 
+ 1. etapp: saime tehtud projekti põhja ning rääkisime ise läbi, millist funktsionaalsust tahame oma rakendusest.
+ 2. etapp: UI development jõdis koodi, kuid arutasime tagaplaanil ka oma andmete struktuuri, mida hakkame kohe peale 2. etappi tegema.
+    

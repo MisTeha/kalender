@@ -7,14 +7,11 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import oop.tegevusteplaneerija.common.CalendarEvent;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import oop.tegevusteplaneerija.common.CalendarEvent;
 import oop.tegevusteplaneerija.common.DatabaseManager;
@@ -59,10 +56,12 @@ public class MainClient extends Application {
 
         List<CalendarEvent> event = List.of(event1, event2);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("EventsView.fxml"));
-        Pane eventsView = loader.load();
-        EventViewsController cont = loader.getController();
-        Scene scene = new Scene(eventsView);
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("DatesContainer.fxml"));
+        Pane dateContainer = loader.load();
+        DatesContainerController cont = loader.getController();
+        Scene scene = new Scene(dateContainer);
+        dateContainer.prefHeightProperty().bind(scene.heightProperty());
+        dateContainer.prefWidthProperty().bind(scene.widthProperty());
 
         event.stream().forEach(e -> cont.addEvent(e));
 
@@ -70,6 +69,8 @@ public class MainClient extends Application {
         dbm.printAll();
         primaryStage.setTitle("Calendar Client");
         primaryStage.setScene(scene);
+        primaryStage.setHeight(600);
+        primaryStage.setWidth(600);
         primaryStage.show();
     }
 }

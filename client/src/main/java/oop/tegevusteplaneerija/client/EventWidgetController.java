@@ -31,7 +31,7 @@ public class EventWidgetController extends VBox {
 
     public EventWidgetController(CalendarEvent e) {
         this();
-        titleLabel.setText("%s: %s to %s".formatted(e.getTitle(), e.getStartTime(), e.getEndTime()));
+        titleLabel.setText("%s: %s to %s".formatted(e.getTitle(), e.getStartTime().toLocalTime(), e.getEndTime().toLocalTime()));
         descLabel.setText(e.getDescription());
         this.e = e;
     }

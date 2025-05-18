@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="bPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop.tegevusteplaneerija.client.DatesContainerController">
+    <center>
+        <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity">
+            <VBox fx:id="container" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+        </ScrollPane>
+    </center>
+</BorderPane>

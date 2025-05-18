@@ -19,7 +19,7 @@ public class EventDialog {
         dialog.initOwner(owner);
         dialog.setTitle("Add New Event");
 
-        fxml = new FXMLLoader(Widgets.class.getClassLoader().getResource("EventDialog.fxml"));
+        fxml = new FXMLLoader(EventDialog.class.getClassLoader().getResource("EventDialog.fxml"));
         Scene scene = new Scene(fxml.load());
 
         dialog.setScene(scene);
