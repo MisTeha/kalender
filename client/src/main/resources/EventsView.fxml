@@ -2,12 +2,8 @@
 
 <?import javafx.scene.layout.*?>
 
-
-<?import javafx.scene.control.ScrollPane?>
-<BorderPane fx:id="bPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop.tegevusteplaneerija.client.EventViewsController">
+<fx:root maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="-Infinity" type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <ScrollPane fitToWidth="true">
-         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" fx:id="events"/>
-      </ScrollPane>
+      <VBox fx:id="events" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="-Infinity" BorderPane.alignment="CENTER" />
    </center>
-</BorderPane>
+</fx:root>

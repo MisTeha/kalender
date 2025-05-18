@@ -3,6 +3,7 @@ package oop.tegevusteplaneerija.client;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
@@ -12,35 +13,28 @@ import oop.tegevusteplaneerija.common.CalendarEvent;
 
 import java.io.IOException;
 
-public class EventViewsController {
+public class EventViewsController extends BorderPane {
     @FXML
     VBox events;
 
-    @FXML
-    BorderPane bPane;
+
+    EventDateContainerController parent;
 
 
-    @FXML
-    public void initialize() {
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem newEventItem = new MenuItem("Add Event");
-        newEventItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    var dialog = new EventDialog(actionEvent, (Stage) bPane.getScene().getWindow());
-                    var event = dialog.waitForResult();
-                    if (event != null) addEvent(event);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        contextMenu.getItems().add(newEventItem);
+    public EventViewsController() {
+        FXMLLoader loader = new FXMLLoader(EventViewsController.class.getClassLoader().getResource("EventsView.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
 
-        bPane.setOnContextMenuRequested(e -> {
-            contextMenu.show(bPane.getScene().getWindow(), e.getScreenX(), e.getScreenY());
-        });
+        try {
+            loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setParent(EventDateContainerController parent) {
+        this.parent = parent;
     }
 
     public void addEvent(CalendarEvent e) {
@@ -50,5 +44,8 @@ public class EventViewsController {
 
     public void removeEvent(EventWidgetController c) {
         events.getChildren().remove(c);
+        if (events.getChildren().isEmpty()) {
+            parent.removeSelf();
+        }
     }
 }
