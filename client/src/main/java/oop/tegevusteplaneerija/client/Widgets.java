@@ -8,16 +8,14 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import oop.tegevusteplaneerija.common.CalendarEvent;
-
-import java.io.InputStream;
+import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
 
 
 public class Widgets {
 
     public static Node EventWidget(CalendarEvent event) {
-        Label label = new Label("%s: %s to %s".formatted(event.getTitle(), event.getStartTime(), event.getEndTime()));
-        Label text = new Label(event.getDescription());
+        Label label = new Label("%s: %s to %s".formatted(event.getNimi(), event.getAlgushetk(), event.getLopphetk()));
+        Label text = new Label(event.getKirjeldus());
 
         Image image = new Image(Widgets.class.getClassLoader().getResourceAsStream("event-end.png"));
         Button button = new IconButton(image, image.getHeight(), image.getWidth());
