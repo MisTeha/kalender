@@ -43,19 +43,19 @@
                   </Label>
                   <Region minHeight="-Infinity" HBox.hgrow="ALWAYS" />
                   <DatePicker fx:id="startDate" />
-                  <Spinner fx:id="startH" maxHeight="-Infinity" maxWidth="70.0">
+                  <Spinner fx:id="startH" editable="true" maxHeight="-Infinity" maxWidth="70.0">
                      <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23"/>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="23" min="0" />
                      </valueFactory>
                   </Spinner>
-                  <Spinner fx:id="startM" maxWidth="70.0">
+                  <Spinner fx:id="startM" editable="true" maxWidth="70.0">
                      <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="59" min="0" />
                      </valueFactory>
                   </Spinner>
-                  <Spinner fx:id="startS" maxWidth="70.0">
+                  <Spinner fx:id="startS" editable="true" maxWidth="70.0">
                      <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="59" min="0" />
                      </valueFactory>
                   </Spinner>
                </children>
@@ -72,19 +72,19 @@
                   </Label>
                   <Region minHeight="-Infinity" HBox.hgrow="ALWAYS" />
                   <DatePicker fx:id="endDate" />
-                  <Spinner fx:id="endH" maxHeight="-Infinity" maxWidth="70.0">
+                  <Spinner fx:id="endH" editable="true" maxHeight="-Infinity" maxWidth="70.0">
                      <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23"/>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="23" min="0" />
                      </valueFactory>
                   </Spinner>
-                  <Spinner fx:id="endM" maxWidth="70.0">
+                  <Spinner fx:id="endM" editable="true" maxWidth="70.0">
                      <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="59" min="0" />
                      </valueFactory>
                   </Spinner>
-                  <Spinner fx:id="endS" maxWidth="70.0">
+                  <Spinner fx:id="endS" editable="true" maxWidth="70.0">
                      <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59"/>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="59" min="0" />
                      </valueFactory>
                   </Spinner>
                </children>

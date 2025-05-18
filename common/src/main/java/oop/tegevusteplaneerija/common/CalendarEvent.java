@@ -1,7 +1,6 @@
 package oop.tegevusteplaneerija.common;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 public class CalendarEvent {
     private String title;
