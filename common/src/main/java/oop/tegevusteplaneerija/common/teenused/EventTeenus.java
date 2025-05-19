@@ -9,12 +9,14 @@ import java.util.List;
 public class EventTeenus {
     private final AndmeHaldus andmeHaldus;
 
-    public EventTeenus(String dbFilePath) throws SQLException {
-        this.andmeHaldus = new AndmeHaldus(dbFilePath);
+    public EventTeenus(AndmeHaldus andmeHaldus) throws SQLException {
+        this.andmeHaldus = andmeHaldus;
     }
 
-    public int lisaSündmus(CalendarEvent event) throws SQLException {
-        return andmeHaldus.lisaSündmus(event);
+    public CalendarEvent lisaSündmus(CalendarEvent event) throws SQLException {
+        int id = andmeHaldus.lisaSündmus(event);
+        event.setId(id);
+        return event;
     }
 
     public void kustutaSündmus(CalendarEvent event) throws SQLException {
@@ -29,15 +31,7 @@ public class EventTeenus {
         return andmeHaldus.leiaGrupiSündmused(gruppId);
     }
 
-    public void uuendaSündmus(CalendarEvent event) throws SQLException {
-        andmeHaldus.uuendaSündmus(event);
-    }
-
-    public CalendarEvent leiaSündmus(int id) {
-        return andmeHaldus.leiaSündmus(id);
-    }
-
-    public List<CalendarEvent> leiaKasutajaSündmused(int kasutajaId) {
-        return andmeHaldus.leiaKasutajaSündmused(kasutajaId);
+    public CalendarEvent leiaSündmus(int eventId) {
+        return andmeHaldus.leiaSündmus(eventId);
     }
 }

@@ -53,4 +53,8 @@ public class GrupiTeenus {
     public List<Grupp> leiaKasutajaGrupid(int kasutajaId) {
         return andmeHaldus.leiaKasutajaGrupid(kasutajaId);
     }
+
+    public Grupp leiaPersonaalneGrupp(Kasutaja omanik) throws SQLException {
+        return andmeHaldus.leiaPersonaalneGrupp(omanik.getId());
+    }
 }

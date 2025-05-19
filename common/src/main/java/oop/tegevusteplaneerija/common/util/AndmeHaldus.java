@@ -4,13 +4,11 @@ import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
 import oop.tegevusteplaneerija.common.mudel.Grupp;
 import oop.tegevusteplaneerija.common.mudel.Kasutaja;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.time.ZonedDateTime;
 
 public class AndmeHaldus {
     private final DatabaseManager dbManager;
@@ -21,12 +19,14 @@ public class AndmeHaldus {
     }
 
     public int lisaSündmus(CalendarEvent event) throws SQLException {
-        return dbManager.lisaEvent(
+        int id = dbManager.lisaEvent(
                 event.getNimi(),
                 event.getKirjeldus(),
                 event.getAlgushetk(),
                 event.getLopphetk(),
                 event.getGrupp().getId());
+        event.setId(id);
+        return id;
     }
 
     public void kustutaSündmus(CalendarEvent event) throws SQLException {
@@ -58,36 +58,34 @@ public class AndmeHaldus {
     }
 
     public Kasutaja leiaKasutaja(int id) {
-        try (ResultSet rs = dbManager.leiaKasutaja(id)) {
-            rs.next();
-            String nimi = rs.getString(1);
-            return new Kasutaja(id, nimi, null);
+        try {
+            return dbManager.leiaKasutaja(id);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Grupp leiaGrupp(int id) {
-        try (ResultSet rs = dbManager.leiaGrupp(id)) {
-            rs.next();
-            String nimi = rs.getString("nimi");
-            int omanikuId = rs.getInt("omanik");
-            Kasutaja omanik = leiaKasutaja(omanikuId);
-            boolean personal = rs.getBoolean("personal");
+        try {
+            Grupp grupp = dbManager.leiaGrupp(id);
+            if (grupp == null)
+                return null;
+            Kasutaja omanik = leiaKasutaja(grupp.getOmanik().getId());
             List<Kasutaja> liikmed = leiaGrupiLiikmed(id);
-            Grupp grupp = new Grupp(id, nimi, omanik, liikmed, personal);
-            return grupp;
+            return new Grupp(grupp.getId(), grupp.getNimi(), omanik, liikmed, grupp.isPersonal());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public List<Kasutaja> leiaGrupiLiikmed(int id) {
-        try (ResultSet rs = dbManager.leiaGrupiLiikmed(id)) {
+        try {
+            List<Integer> liikmeIds = dbManager.leiaGrupiLiikmed(id);
             List<Kasutaja> liikmed = new ArrayList<>();
-            while (rs.next()) {
-                Kasutaja liige = leiaKasutaja(rs.getInt(1));
-                liikmed.add(liige);
+            for (int liikmeId : liikmeIds) {
+                Kasutaja liige = leiaKasutaja(liikmeId);
+                if (liige != null)
+                    liikmed.add(liige);
             }
             return liikmed;
         } catch (SQLException e) {
@@ -96,16 +94,13 @@ public class AndmeHaldus {
     }
 
     public List<Grupp> leiaKasutajaGrupid(int kasutajaId) {
-        try (ResultSet rs = dbManager.leiaKasutajaGrupid(kasutajaId)) {
+        try {
+            List<Integer> gruppIds = dbManager.leiaKasutajaGrupid(kasutajaId);
             List<Grupp> grupid = new ArrayList<>();
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String nimi = rs.getString("nimi");
-                int omanikId = rs.getInt("omanik");
-                Kasutaja omanik = leiaKasutaja(omanikId);
-                boolean personal = rs.getBoolean("personal");
-                List<Kasutaja> liikmed = leiaGrupiLiikmed(id);
-                grupid.add(new Grupp(id, nimi, omanik, liikmed, personal));
+            for (int gruppId : gruppIds) {
+                Grupp grupp = leiaGrupp(gruppId);
+                if (grupp != null)
+                    grupid.add(grupp);
             }
             return grupid;
         } catch (SQLException e) {
@@ -114,23 +109,40 @@ public class AndmeHaldus {
     }
 
     public List<CalendarEvent> leiaGrupiSündmused(int gruppId) {
-        List<CalendarEvent> events = new ArrayList<>();
-        try (ResultSet rs = dbManager.leiaGrupiSündmused(gruppId)) {
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String nimi = rs.getString("nimi");
-                String kirjeldus = rs.getString("kirjeldus");
-                java.sql.Timestamp algus = rs.getTimestamp("algushetk");
-                java.sql.Timestamp lopp = rs.getTimestamp("lopphetk");
-                ZonedDateTime algushetk = algus.toInstant().atZone(java.time.ZoneId.systemDefault());
-                ZonedDateTime lopphetk = lopp.toInstant().atZone(java.time.ZoneId.systemDefault());
-                Grupp grupp = leiaGrupp(gruppId);
-                events.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, grupp));
-            }
+        try {
+            return dbManager.leiaGrupiSündmused(gruppId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return events;
+    }
+
+    public List<CalendarEvent> leiaKõikSündmused() throws SQLException {
+        return dbManager.leiaKõikSündmused();
+    }
+
+    public CalendarEvent leiaSündmus(int eventId) {
+        try {
+            return dbManager.leiaSündmus(eventId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // pole praegu kasutuses, tuleviku jaoks
+    public List<CalendarEvent> leiaKasutajaSündmused(int kasutajaId) {
+        try {
+            return dbManager.leiaKasutajaSündmused(kasutajaId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Grupp leiaPersonaalneGrupp(int omanikId) {
+        try {
+            return dbManager.leiaPersonaalneGrupp(omanikId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Map<Grupp, List<CalendarEvent>> leiaKasutajaGrupidJaSündmused(int kasutajaId) {
@@ -141,44 +153,5 @@ public class AndmeHaldus {
             result.put(grupp, events);
         }
         return result;
-    }
-
-    public List<CalendarEvent> leiaKõikSündmused() throws SQLException {
-        List<CalendarEvent> events = new ArrayList<>();
-        try (ResultSet rs = dbManager.leiaKõikSündmused()) {
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String nimi = rs.getString("nimi");
-                String kirjeldus = rs.getString("kirjeldus");
-                java.sql.Timestamp algus = rs.getTimestamp("algushetk");
-                java.sql.Timestamp lopp = rs.getTimestamp("lopphetk");
-                int gruppId = rs.getInt("grupp");
-                ZonedDateTime algushetk = algus.toInstant().atZone(java.time.ZoneId.systemDefault());
-                ZonedDateTime lopphetk = lopp.toInstant().atZone(java.time.ZoneId.systemDefault());
-                Grupp grupp = leiaGrupp(gruppId);
-                events.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, grupp));
-            }
-        }
-        return events;
-    }
-
-    // Update event
-    public void uuendaSündmus(CalendarEvent event) throws SQLException {
-        throw new UnsupportedOperationException("uuendaSündmus is not yet implemented in AndmeHaldus");
-    }
-
-    // Find event by ID
-    public CalendarEvent leiaSündmus(int id) {
-        throw new UnsupportedOperationException("leiaSündmus is not yet implemented in AndmeHaldus");
-    }
-
-    // Find all events for a user
-    public List<CalendarEvent> leiaKasutajaSündmused(int kasutajaId) {
-        throw new UnsupportedOperationException("leiaKasutajaSündmused is not yet implemented in AndmeHaldus");
-    }
-
-    // Update user
-    public void uuendaKasutaja(Kasutaja kasutaja) throws SQLException {
-        throw new UnsupportedOperationException("uuendaKasutaja is not yet implemented in AndmeHaldus");
     }
 }

@@ -3,14 +3,14 @@ package oop.tegevusteplaneerija.common.mudel;
 import java.time.ZonedDateTime;
 
 public class CalendarEvent {
-    private int id;
+    private Integer id;
     private String nimi;
     private String kirjeldus;
     private ZonedDateTime algushetk;
     private ZonedDateTime lopphetk;
     private Grupp grupp;
 
-    public CalendarEvent(int id, String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk,
+    public CalendarEvent(Integer id, String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk,
             Grupp grupp) {
         this.id = id;
         this.nimi = nimi;
@@ -21,7 +21,7 @@ public class CalendarEvent {
     }
 
     public CalendarEvent(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, Grupp grupp) {
-        this(-1, nimi, kirjeldus, algushetk, lopphetk, grupp);
+        this(null, nimi, kirjeldus, algushetk, lopphetk, grupp);
     }
 
     // Getters
@@ -31,6 +31,10 @@ public class CalendarEvent {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getKirjeldus() {

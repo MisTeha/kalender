@@ -45,7 +45,14 @@ public class KasutajaTeenus {
         andmeHaldus.kustutaKasutaja(kasutaja);
     }
 
-    public void uuendaKasutaja(Kasutaja kasutaja) throws SQLException {
-        andmeHaldus.uuendaKasutaja(kasutaja);
+    public void lisaPersonaalneGrupp(Kasutaja kasutaja) {
+        try {
+            Grupp personal = grupiTeenus.leiaPersonaalneGrupp(kasutaja);
+            if (personal != null) {
+                kasutaja.setPersonalGrupp(personal);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
