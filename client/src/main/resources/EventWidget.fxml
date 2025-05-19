@@ -2,20 +2,19 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <fx:root type="VBox" xmlns:fx="http://javafx.com/fxml">
     <HBox>
         <VBox>
-            <Label fx:id="titleLabel" minWidth="100"/>
-            <Label fx:id="descLabel" minWidth="100"/>
+            <Label fx:id="titleLabel" minWidth="100" />
+            <Label fx:id="descLabel" minWidth="100" />
         </VBox>
-        <Region HBox.hgrow="ALWAYS"/>
+        <Region HBox.hgrow="ALWAYS" />
         <Button fx:id="doneButton" onAction="#remove">
             <graphic>
                 <ImageView pickOnBounds="true" preserveRatio="true">
-                    <Image url="event-end.png"/>
+                    <Image url="event-end.png" />
                 </ImageView>
             </graphic>
         </Button>

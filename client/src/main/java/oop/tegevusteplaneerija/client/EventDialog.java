@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import oop.tegevusteplaneerija.common.CalendarEvent;
+import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
 
 import java.io.IOException;
 
@@ -30,5 +30,9 @@ public class EventDialog {
 
         EventDialogController controller = fxml.getController();
         return controller.getResult();
+    }
+
+    public FXMLLoader getFxmlLoader() {
+        return fxml;
     }
 }

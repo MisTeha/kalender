@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import oop.tegevusteplaneerija.common.CalendarEvent;
+import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
 
 import java.io.IOException;
 
@@ -18,10 +18,10 @@ public class EventWidgetController extends VBox {
     private CalendarEvent e;
 
     public EventWidgetController() {
-        FXMLLoader loader = new FXMLLoader(EventWidgetController.class.getClassLoader().getResource("EventWidget.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                EventWidgetController.class.getClassLoader().getResource("EventWidget.fxml"));
         loader.setRoot(this);
         loader.setController(this);
-
         try {
             loader.load();
         } catch (IOException e) {
@@ -29,20 +29,26 @@ public class EventWidgetController extends VBox {
         }
     }
 
-    public EventWidgetController(CalendarEvent e) {
-        this();
-        titleLabel.setText("%s: %s to %s".formatted(e.getTitle(), e.getStartTime().toLocalTime(), e.getEndTime().toLocalTime()));
-        descLabel.setText(e.getDescription());
-        this.e = e;
+    public static EventWidgetController create(CalendarEvent e, EventViewsController par) {
+        EventWidgetController controller = new EventWidgetController();
+        controller.setData(e, par);
+        return controller;
     }
 
-    public EventWidgetController(CalendarEvent e, EventViewsController par) {
-        this(e);
-        parent = par;
+    private void setData(CalendarEvent e, EventViewsController par) {
+        titleLabel.setText(
+                "%s: %s to %s".formatted(e.getNimi(), e.getAlgushetk().toLocalTime(), e.getLopphetk().toLocalTime()));
+        descLabel.setText(e.getKirjeldus());
+        this.e = e;
+        this.parent = par;
     }
 
     @FXML
-    void remove() {
+    public void remove() {
         parent.removeEvent(this);
+    }
+
+    public CalendarEvent getEvent() {
+        return e;
     }
 }
