@@ -30,7 +30,7 @@ public class CalendarEvent {
     }
 
     public int getId() {
-        return id;
+        return id != null ? id : -1;
     }
 
     public void setId(int id) {
