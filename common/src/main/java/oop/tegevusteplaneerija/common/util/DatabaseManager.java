@@ -42,20 +42,17 @@ public class DatabaseManager {
 
     protected int lisaEvent(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp)
             throws SQLException {
-        ResultSet rs = executeUpdate(SQLStatements.ADD_EVENT, ps -> {
+        return executeUpdate(SQLStatements.ADD_EVENT, ps -> {
             ps.setString(1, nimi);
             ps.setString(2, kirjeldus);
             ps.setTimestamp(3, Timestamp.from(algushetk.toInstant()));
             ps.setTimestamp(4, Timestamp.from(lopphetk.toInstant()));
             ps.setInt(5, grupp);
-        });
-        int saadus = rs.next() ? rs.getInt(1) : -1;
-        rs.close();
-        return saadus;
+        }, true);
     }
 
     protected void kustutaEvent(int eventId) throws SQLException {
-        executeUpdate(SQLStatements.REMOVE_EVENT, ps -> ps.setInt(1, eventId)).close();
+        executeUpdate(SQLStatements.REMOVE_EVENT, ps -> ps.setInt(1, eventId), false);
     }
 
     protected void uuendaSündmus(int id, String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk,
@@ -67,49 +64,43 @@ public class DatabaseManager {
             ps.setTimestamp(4, Timestamp.from(lopphetk.toInstant()));
             ps.setInt(5, grupp);
             ps.setInt(6, id);
-        }).close();
+        }, false);
     }
 
     protected int lisaGrupp(String nimi, int omanikId, boolean personal) throws SQLException {
-        ResultSet rs = executeUpdate(SQLStatements.ADD_GROUP, ps -> {
+        return executeUpdate(SQLStatements.ADD_GROUP, ps -> {
             ps.setString(1, nimi);
             ps.setInt(2, omanikId);
             ps.setBoolean(3, personal);
-        });
-        int saadus = rs.next() ? rs.getInt(1) : -1;
-        rs.close();
-        return saadus;
+        }, true);
     }
 
     protected void kustutaGrupp(int gruppId) throws SQLException {
-        executeUpdate(SQLStatements.REMOVE_GROUP, ps -> ps.setInt(1, gruppId)).close();
+        executeUpdate(SQLStatements.REMOVE_GROUP, ps -> ps.setInt(1, gruppId), false);
     }
 
     protected void lisaGrupiLiige(int gruppId, int liigeId) throws SQLException {
         executeUpdate(SQLStatements.ADD_GROUP_MEMBER, ps -> {
             ps.setInt(1, gruppId);
             ps.setInt(2, liigeId);
-        }).close();
+        }, false);
     }
 
     protected void kustutaGrupiLiige(int gruppId, int liigeId) throws SQLException {
         executeUpdate(SQLStatements.REMOVE_GROUP_MEMBER, ps -> {
             ps.setInt(1, gruppId);
             ps.setInt(2, liigeId);
-        }).close();
+        }, false);
     }
 
     protected int lisaKasutaja(String nimi) throws SQLException {
-        ResultSet rs = executeUpdate(SQLStatements.ADD_USER, ps -> {
+        return executeUpdate(SQLStatements.ADD_USER, ps -> {
             ps.setString(1, nimi);
-        });
-        int saadus = rs.next() ? rs.getInt(1) : -1;
-        rs.close();
-        return saadus;
+        }, true);
     }
 
     protected void kustutaKasutaja(int kasutajaId) throws SQLException {
-        executeUpdate(SQLStatements.REMOVE_USER, ps -> ps.setInt(1, kasutajaId)).close();
+        executeUpdate(SQLStatements.REMOVE_USER, ps -> ps.setInt(1, kasutajaId), false);
     }
 
     protected Kasutaja leiaKasutaja(int kasutajaId) throws SQLException {
@@ -179,7 +170,9 @@ public class DatabaseManager {
                                 .atZone(java.time.ZoneId.systemDefault());
                         ZonedDateTime lopphetk = rs.getTimestamp("lopphetk").toInstant()
                                 .atZone(java.time.ZoneId.systemDefault());
-                        result.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, null));
+                        int groupId = rs.getInt("grupp");
+                        Grupp grupp = new Grupp(groupId, null, null, List.of(), false);
+                        result.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, grupp));
                     }
                     return result;
                 });
@@ -198,7 +191,9 @@ public class DatabaseManager {
                                 .atZone(java.time.ZoneId.systemDefault());
                         ZonedDateTime lopphetk = rs.getTimestamp("lopphetk").toInstant()
                                 .atZone(java.time.ZoneId.systemDefault());
-                        result.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, null));
+                        int groupId = rs.getInt("grupp");
+                        Grupp grupp = new Grupp(groupId, null, null, List.of(), false);
+                        result.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, grupp));
                     }
                     return result;
                 });
@@ -206,7 +201,8 @@ public class DatabaseManager {
 
     public List<CalendarEvent> leiaKõikSündmused() throws SQLException {
         return executeQuery(SQLStatements.GET_ALL_EVENTS,
-                (_) -> {},
+                (_) -> {
+                },
                 rs -> {
                     List<CalendarEvent> result = new ArrayList<>();
                     while (rs.next()) {
@@ -217,7 +213,9 @@ public class DatabaseManager {
                                 .atZone(java.time.ZoneId.systemDefault());
                         ZonedDateTime lopphetk = rs.getTimestamp("lopphetk").toInstant()
                                 .atZone(java.time.ZoneId.systemDefault());
-                        result.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, null));
+                        int groupId = rs.getInt("grupp");
+                        Grupp grupp = new Grupp(groupId, null, null, List.of(), false);
+                        result.add(new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, grupp));
                     }
                     return result;
                 });
@@ -235,7 +233,9 @@ public class DatabaseManager {
                                 .atZone(java.time.ZoneId.systemDefault());
                         ZonedDateTime lopphetk = rs.getTimestamp("lopphetk").toInstant()
                                 .atZone(java.time.ZoneId.systemDefault());
-                        return new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, null);
+                        int groupId = rs.getInt("grupp");
+                        Grupp grupp = new Grupp(groupId, null, null, List.of(), false);
+                        return new CalendarEvent(id, nimi, kirjeldus, algushetk, lopphetk, grupp);
                     }
                     return null;
                 });
@@ -258,41 +258,41 @@ public class DatabaseManager {
     /**
      * Funktsioon, mis jooksutab consumerit, et parameetreid sättida ning siis
      * executeb statemendi.
-     * Commitimine ei tundu siin väga vajalik... teeb lihtsalt asja raskemaks. Järgmises analoogses
+     * Commitimine ei tundu siin väga vajalik... teeb lihtsalt asja raskemaks.
+     * Järgmises analoogses
      * meetodis ei kasuta.
      *
-     * @param sql             SQL "skript"
-     * @param parameterSetter consumer mis seab ps argumendid õigeks
+     * @param sql                SQL "skript"
+     * @param parameterSetter    consumer mis seab ps argumendid õigeks
+     * @param returnGeneratedKey kas päring tagastab võtit (lisab midagi kuhugi) või
+     *                           mitte.
      * @throws SQLException kui midagi valesti.
      */
-    private ResultSet executeUpdate(String sql, SQLConsumer<PreparedStatement> parameterSetter) throws SQLException {
-        Connection conn = DriverManager.getConnection(url);
-        ResultSet rs;
-        try {
+    private int executeUpdate(String sql, SQLConsumer<PreparedStatement> parameterSetter, boolean returnGeneratedKey)
+            throws SQLException {
+        try (Connection conn = DriverManager.getConnection(url);
+                PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                parameterSetter.accept(ps);
-                ps.executeUpdate();
-                try {
-                    rs = ps.getGeneratedKeys();
-                } catch (Exception e) {
-                    System.out.printf("See ei tohiks väga juhtuda tegelt");
-                    throw e;
+            parameterSetter.accept(ps);
+            ps.executeUpdate();
+            int key = -1;
+            if (returnGeneratedKey) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        key = rs.getInt(1);
+                    }
                 }
             }
             conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
+            return key;
         }
-        return rs;
     }
 
     /**
-     * Analoogne eelnevale meetodile, kasutab consumerit, et parameetreid õigeks seada,
-     * aga ei returni mitte ResultSet'i, vaid mapperit, mis teeb ResultSetiga tegevused ära
+     * Analoogne eelnevale meetodile, kasutab consumerit, et parameetreid õigeks
+     * seada,
+     * aga ei returni mitte ResultSet'i, vaid mapperit, mis teeb ResultSetiga
+     * tegevused ära
      * ning siis sulgeb selle (try-with resources'iga)
      *
      * @param sql             SQL "skript"
