@@ -23,8 +23,6 @@ public class KasutajaTeenus {
         int kasId = andmeHaldus.lisaKasutaja(kasutaja);
         kasutaja.setId(kasId);
         Grupp grupp = grupiTeenus.looPersonaalneGrupp(nimi + "-isiklik", kasutaja);
-        int gruppId = andmeHaldus.lisaGrupp(grupp);
-        grupp.setId(gruppId);
         kasutaja.setPersonalGrupp(grupp);
         return kasutaja;
     }

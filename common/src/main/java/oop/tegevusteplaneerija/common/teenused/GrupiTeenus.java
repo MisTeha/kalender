@@ -27,6 +27,10 @@ public class GrupiTeenus {
     }
 
     public Grupp looPersonaalneGrupp(String nimi, Kasutaja omanik) throws SQLException {
+        Grupp existing = andmeHaldus.leiaPersonaalneGrupp(omanik.getId());
+        if (existing != null) {
+            return existing;
+        }
         Grupp grupp = new Grupp(nimi, omanik, List.of(), true);
         int id = andmeHaldus.lisaGrupp(grupp);
         grupp.setId(id);
