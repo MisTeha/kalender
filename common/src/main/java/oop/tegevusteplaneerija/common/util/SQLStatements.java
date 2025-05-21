@@ -36,7 +36,7 @@ public class SQLStatements {
    public static final String CREATE_KASUTAJAD_TABLE = """
          CREATE TABLE IF NOT EXISTS kasutajad (
          	id integer PRIMARY KEY AUTOINCREMENT,
-         	nimi TEXT NOT NULL
+         	nimi TEXT UNIQUE NOT NULL 
          );
          """;
    // language=SQLite
@@ -119,4 +119,6 @@ public class SQLStatements {
 
    // language=SQLite
    public static final String GET_PERSONAL_GROUP = "SELECT id, nimi, omanik, personal FROM grupid WHERE omanik = ? AND personal = 1 LIMIT 1";
+   // language=SQLite
+   public static final String GET_USER_BY_NAME = "SELECT id, nimi FROM kasutajad WHERE nimi = ?";
 }

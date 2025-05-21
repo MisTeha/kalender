@@ -18,7 +18,16 @@ public class KasutajaTeenus {
         this.grupiTeenus = new GrupiTeenus(andmeHaldus);
     }
 
+    public Kasutaja leiaKasutaja(String nimi) {
+        return andmeHaldus.leiaKasutaja(nimi);
+    }
+
     public Kasutaja looKasutaja(String nimi) throws SQLException {
+        // Kontrolli, kas kasutaja juba eksisteerib
+        Kasutaja olemasolev = leiaKasutaja(nimi);
+        if (olemasolev != null) {
+            throw new IllegalArgumentException("Kasutajanimi on juba kasutusel");
+        }
         Kasutaja kasutaja = new Kasutaja(nimi, null);
         int kasId = andmeHaldus.lisaKasutaja(kasutaja);
         kasutaja.setId(kasId);

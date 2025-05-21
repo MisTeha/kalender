@@ -65,6 +65,14 @@ public class AndmeHaldus {
         }
     }
 
+    public Kasutaja leiaKasutaja(String nimi) {
+        try {
+            return dbManager.leiaKasutaja(nimi);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Grupp leiaGrupp(int id) {
         try {
             Grupp grupp = dbManager.leiaGrupp(id);

@@ -116,6 +116,19 @@ public class DatabaseManager {
                 });
     }
 
+    protected Kasutaja leiaKasutaja(String nimi) throws SQLException {
+        return executeQuery(SQLStatements.GET_USER_BY_NAME,
+                ps -> ps.setString(1, nimi),
+                rs -> {
+                    if (rs.next()) {
+                        int id = rs.getInt("id");
+                        String nimiResult = rs.getString("nimi");
+                        return new Kasutaja(id, nimiResult, null);
+                    }
+                    return null;
+                });
+    }
+
     protected Grupp leiaGrupp(int gruppId) throws SQLException {
         return executeQuery(SQLStatements.GET_GROUP,
                 ps -> ps.setInt(1, gruppId),
