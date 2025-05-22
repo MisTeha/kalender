@@ -13,8 +13,8 @@ import java.util.Map;
 public class AndmeHaldus {
     private final DatabaseManager dbManager;
 
-    public AndmeHaldus(String dbFilePath) throws SQLException {
-        this.dbManager = new DatabaseManager(dbFilePath);
+    public AndmeHaldus(DatabaseManager dbManager) throws SQLException {
+        this.dbManager = dbManager;
         dbManager.init();
     }
 

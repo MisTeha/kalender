@@ -8,6 +8,8 @@ import oop.tegevusteplaneerija.common.teenused.EventTeenus;
 import oop.tegevusteplaneerija.common.teenused.GrupiTeenus;
 import oop.tegevusteplaneerija.common.teenused.KasutajaTeenus;
 import oop.tegevusteplaneerija.common.util.AndmeHaldus;
+import oop.tegevusteplaneerija.common.util.DatabaseManager;
+import oop.tegevusteplaneerija.server.util.ServerDBManager;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -26,8 +28,9 @@ public class MainServer {
         final GrupiTeenus grupiTeenus;
         final KasutajaTeenus kasutajaTeenus;
         try {
-            andmeHaldus = new AndmeHaldus("server.db");
-            eventTeenus = new EventTeenus("server.db");
+            DatabaseManager dbManager = new ServerDBManager("server.db");
+            andmeHaldus = new AndmeHaldus(dbManager);
+            eventTeenus = new EventTeenus(andmeHaldus);
             grupiTeenus = new GrupiTeenus(andmeHaldus);
             kasutajaTeenus = new KasutajaTeenus(andmeHaldus);
         } catch (SQLException e) {
@@ -37,6 +40,8 @@ public class MainServer {
         }
 
         Gson gson = new Gson();
+
+        // --- EVENT ENDPOINTS ---
 
         get("/events", (req, res) -> {
             res.type("application/json");
@@ -48,11 +53,6 @@ public class MainServer {
             }
         }, gson::toJson);
 
-        get("/tere", (req, res) -> {
-            res.type("application/json");
-            return "teremain";
-        }, gson::toJson);
-
         post("/events", (req, res) -> {
             res.type("application/json");
             try {
@@ -62,9 +62,10 @@ public class MainServer {
                     res.status(400);
                     return "Invalid event data";
                 }
-                int id = eventTeenus.lisaSündmus(event);
+                int id = eventTeenus.lisaSündmus(event).getId();
+                // kontroll, kas sündmus tuli.
                 event = eventTeenus.leiaSündmus(id);
-                res.status(201); // Created
+                res.status(201); // tehtud
                 return event;
             } catch (SQLException e) {
                 res.status(520);
@@ -72,35 +73,162 @@ public class MainServer {
             }
         }, gson::toJson);
 
+        // Get event by id
+        get("/events/:id", (req, res) -> {
+            res.type("application/json");
+            int id = Integer.parseInt(req.params(":id"));
+            return eventTeenus.leiaSündmus(id);
+        }, gson::toJson);
 
-        get("/showcase", (req, res) -> {
+        // Get events by group
+        get("/groups/:id/events", (req, res) -> {
+            res.type("application/json");
+            int groupId = Integer.parseInt(req.params(":id"));
+            return eventTeenus.leiaGrupiSündmused(groupId);
+        }, gson::toJson);
+
+        // Delete event
+        delete("/events/:id", (req, res) -> {
+            res.type("application/json");
+            int id = Integer.parseInt(req.params(":id"));
+            CalendarEvent event = eventTeenus.leiaSündmus(id);
+            if (event != null) {
+                eventTeenus.kustutaSündmus(event);
+                res.status(204);
+                return "";
+            } else {
+                res.status(404);
+                return "Event not found";
+            }
+        });
+
+        // --- GROUP ENDPOINTS ---
+        // Get group by id
+        get("/groups/:id", (req, res) -> {
+            res.type("application/json");
+            int id = Integer.parseInt(req.params(":id"));
+            return grupiTeenus.leiaGrupp(id);
+        }, gson::toJson);
+
+        // Get all groups for a user
+        get("/users/:id/groups", (req, res) -> {
+            res.type("application/json");
+            int userId = Integer.parseInt(req.params(":id"));
+            return grupiTeenus.leiaKasutajaGrupid(userId);
+        }, gson::toJson);
+
+        // Create group
+        post("/groups", (req, res) -> {
             res.type("application/json");
             try {
-                Kasutaja kasutaja = kasutajaTeenus.looKasutaja("Testkasutaja");
-                Grupp grupp = grupiTeenus.looKoostööGrupp("Testgrupp", kasutaja, List.of(kasutaja));
-                CalendarEvent event = new CalendarEvent("Test Event", "Kirjeldus", java.time.ZonedDateTime.now(),
-                        java.time.ZonedDateTime.now().plusHours(1), grupp);
-                int eventId = eventTeenus.lisaSündmus(event);
-                List<CalendarEvent> groupEvents = eventTeenus.leiaGrupiSündmused(grupp.getId());
-                List<Grupp> userGroups = grupiTeenus.leiaKasutajaGrupid(kasutaja.getId());
-                List<CalendarEvent> userEvents = eventTeenus.leiaKasutajaSündmused(kasutaja.getId());
-                CalendarEvent fetchedEvent = eventTeenus.leiaSündmus(eventId);
-                eventTeenus.kustutaSündmus(fetchedEvent);
-                grupiTeenus.kustutaGrupp(grupp);
-                kasutajaTeenus.kustutaKasutaja(kasutaja);
-                return Map.of(
-                        "createdUser", kasutaja,
-                        "createdGroup", grupp,
-                        "createdEvent", event,
-                        "groupEvents", groupEvents,
-                        "userGroups", userGroups,
-                        "userEvents", userEvents,
-                        "fetchedEvent", fetchedEvent);
+                Map<String, Object> data = gson.fromJson(req.body(), Map.class);
+                String nimi = (String) data.get("nimi");
+                int omanikId = ((Double) data.get("omanikId")).intValue();
+                List<Double> liikmedIds = (List<Double>) data.get("liikmed");
+                Kasutaja omanik = kasutajaTeenus.leiaKasutaja(omanikId);
+                List<Kasutaja> liikmed = new java.util.ArrayList<>();
+                for (Double id : liikmedIds) {
+                    liikmed.add(kasutajaTeenus.leiaKasutaja(id.intValue()));
+                }
+                Grupp grupp = grupiTeenus.looKoostööGrupp(nimi, omanik, liikmed);
+                res.status(201);
+                return grupp;
             } catch (Exception e) {
-                res.status(500);
-                throw(e);
-                //return Map.of("error", e.getMessage());
+                res.status(520);
+                return e.getMessage();
             }
         }, gson::toJson);
+
+        // Delete group
+        delete("/groups/:id", (req, res) -> {
+            res.type("application/json");
+            int id = Integer.parseInt(req.params(":id"));
+            Grupp grupp = grupiTeenus.leiaGrupp(id);
+            if (grupp != null) {
+                grupiTeenus.kustutaGrupp(grupp);
+                res.status(204);
+                return "";
+            } else {
+                res.status(404);
+                return "Group not found";
+            }
+        });
+
+        // Add member to group
+        post("/groups/:id/members", (req, res) -> {
+            res.type("application/json");
+            int groupId = Integer.parseInt(req.params(":id"));
+            Map<String, Object> data = gson.fromJson(req.body(), Map.class);
+            int userId = ((Double) data.get("userId")).intValue();
+            Grupp grupp = grupiTeenus.leiaGrupp(groupId);
+            Kasutaja kasutaja = kasutajaTeenus.leiaKasutaja(userId);
+            grupiTeenus.lisaGrupiLiige(grupp, kasutaja);
+            res.status(201);
+            return "";
+        });
+
+        // Remove member from group
+        delete("/groups/:groupId/members/:userId", (req, res) -> {
+            res.type("application/json");
+            int groupId = Integer.parseInt(req.params(":groupId"));
+            int userId = Integer.parseInt(req.params(":userId"));
+            Grupp grupp = grupiTeenus.leiaGrupp(groupId);
+            Kasutaja kasutaja = kasutajaTeenus.leiaKasutaja(userId);
+            grupiTeenus.kustutaGrupiLiige(grupp, kasutaja);
+            res.status(204);
+            return "";
+        });
+
+        // Get group members
+        get("/groups/:id/members", (req, res) -> {
+            res.type("application/json");
+            int groupId = Integer.parseInt(req.params(":id"));
+            return grupiTeenus.leiaGrupiLiikmed(groupId);
+        }, gson::toJson);
+
+        // --- USER ENDPOINTS ---
+        // Get user by id
+        get("/users/:id", (req, res) -> {
+            res.type("application/json");
+            int id = Integer.parseInt(req.params(":id"));
+            return kasutajaTeenus.leiaKasutaja(id);
+        }, gson::toJson);
+
+        // Get user by name
+        get("/users/byname/:name", (req, res) -> {
+            res.type("application/json");
+            String name = req.params(":name");
+            return kasutajaTeenus.leiaKasutaja(name);
+        }, gson::toJson);
+
+        // Create user
+        post("/users", (req, res) -> {
+            res.type("application/json");
+            try {
+                Map<String, Object> data = gson.fromJson(req.body(), Map.class);
+                String nimi = (String) data.get("nimi");
+                Kasutaja kasutaja = kasutajaTeenus.looKasutaja(nimi);
+                res.status(201);
+                return kasutaja;
+            } catch (Exception e) {
+                res.status(520);
+                return e.getMessage();
+            }
+        }, gson::toJson);
+
+        // Delete user
+        delete("/users/:id", (req, res) -> {
+            res.type("application/json");
+            int id = Integer.parseInt(req.params(":id"));
+            Kasutaja kasutaja = kasutajaTeenus.leiaKasutaja(id);
+            if (kasutaja != null) {
+                kasutajaTeenus.kustutaKasutaja(kasutaja);
+                res.status(204);
+                return "";
+            } else {
+                res.status(404);
+                return "User not found";
+            }
+        });
     }
 }
