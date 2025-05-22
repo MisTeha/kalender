@@ -19,7 +19,7 @@ public class AndmeHaldus {
     }
 
     public int lisaSündmus(CalendarEvent event) throws SQLException {
-        int id = dbManager.lisaEvent(
+        int id = dbManager.lisaSündmus(
                 event.getNimi(),
                 event.getKirjeldus(),
                 event.getAlgushetk(),
@@ -30,7 +30,7 @@ public class AndmeHaldus {
     }
 
     public void kustutaSündmus(CalendarEvent event) throws SQLException {
-        dbManager.kustutaEvent(event.getId());
+        dbManager.kustutaSündmus(event.getId());
     }
 
     public int lisaKasutaja(Kasutaja kasutaja) throws SQLException {

@@ -42,7 +42,7 @@ public class ServerDBManager implements DatabaseManager {
         }
     }
 
-    public int lisaEvent(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp)
+    public int lisaSündmus(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp)
             throws SQLException {
         return executeUpdate(SQLStatements.ADD_EVENT, ps -> {
             ps.setString(1, nimi);
@@ -53,7 +53,7 @@ public class ServerDBManager implements DatabaseManager {
         }, true);
     }
 
-    public void kustutaEvent(int eventId) throws SQLException {
+    public void kustutaSündmus(int eventId) throws SQLException {
         executeUpdate(SQLStatements.REMOVE_EVENT, ps -> ps.setInt(1, eventId), false);
     }
 

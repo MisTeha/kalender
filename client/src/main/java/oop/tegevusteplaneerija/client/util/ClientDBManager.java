@@ -23,6 +23,17 @@ public class ClientDBManager implements DatabaseManager {
 
     }
 
+    private void clearGrupid() {
+
+    }
+
+    private void clearGrupiliikmed() {
+
+    }
+
+    private void clearSündmused() {
+
+    }
 
     @Override
     public void init() throws SQLException {
@@ -30,12 +41,12 @@ public class ClientDBManager implements DatabaseManager {
     }
 
     @Override
-    public int lisaEvent(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp) throws SQLException {
+    public int lisaSündmus(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp) throws SQLException {
         return 0;
     }
 
     @Override
-    public void kustutaEvent(int eventId) throws SQLException {
+    public void kustutaSündmus(int eventId) throws SQLException {
 
     }
 

@@ -13,8 +13,8 @@ import java.util.List;
  */
 public interface DatabaseManager {
     void init() throws SQLException;
-    int lisaEvent(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp) throws SQLException;
-    void kustutaEvent(int eventId) throws SQLException;
+    int lisaSündmus(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp) throws SQLException;
+    void kustutaSündmus(int eventId) throws SQLException;
     void uuendaSündmus(int id, String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp) throws SQLException;
     int lisaGrupp(String nimi, int omanikId, boolean personal) throws SQLException;
     void kustutaGrupp(int gruppId) throws SQLException;
