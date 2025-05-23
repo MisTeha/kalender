@@ -196,7 +196,7 @@ public class ServerDBManager extends DatabaseManager {
 
     public List<CalendarEvent> leiaKõikSündmused() throws SQLException {
         return executeQuery(SQLStatements.GET_ALL_EVENTS,
-                (_) -> {
+                (__) -> {
                 },
                 rs -> {
                     List<CalendarEvent> result = new ArrayList<>();
