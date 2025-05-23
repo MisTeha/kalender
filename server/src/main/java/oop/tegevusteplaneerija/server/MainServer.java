@@ -1,6 +1,9 @@
 package oop.tegevusteplaneerija.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonSerializer;
 import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
 import oop.tegevusteplaneerija.common.mudel.Grupp;
 import oop.tegevusteplaneerija.common.mudel.Kasutaja;
@@ -12,6 +15,8 @@ import oop.tegevusteplaneerija.common.util.DatabaseManager;
 import oop.tegevusteplaneerija.server.util.ServerDBManager;
 
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +44,19 @@ public class MainServer {
             return;
         }
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(ZonedDateTime.class,
+                        (JsonSerializer<ZonedDateTime>) (src, typeOfSrc,
+                                context) -> new com.google.gson.JsonPrimitive(src.toString()))
+                .registerTypeAdapter(ZonedDateTime.class,
+                        (JsonDeserializer<ZonedDateTime>) (json, type, context) -> ZonedDateTime
+                                .parse(json.getAsString()))
+                .registerTypeAdapter(ZoneId.class,
+                        (JsonSerializer<ZoneId>) (src, typeOfSrc,
+                                context) -> new com.google.gson.JsonPrimitive(src.getId()))
+                .registerTypeAdapter(ZoneId.class,
+                        (JsonDeserializer<ZoneId>) (json, type, context) -> ZoneId.of(json.getAsString()))
+                .create();
 
         // --- EVENT ENDPOINTS ---
 
@@ -209,6 +226,7 @@ public class MainServer {
                 String nimi = (String) data.get("nimi");
                 Kasutaja kasutaja = kasutajaTeenus.looKasutaja(nimi);
                 res.status(201);
+                kasutaja.setPersonalGrupp(null); // muidu hakkab gson ringlema
                 return kasutaja;
             } catch (Exception e) {
                 res.status(520);

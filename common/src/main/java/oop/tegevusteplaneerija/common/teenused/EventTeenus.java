@@ -9,7 +9,7 @@ import java.util.List;
 public class EventTeenus {
     private final AndmeHaldus andmeHaldus;
 
-    public EventTeenus(AndmeHaldus andmeHaldus) throws SQLException {
+    public EventTeenus(AndmeHaldus andmeHaldus) {
         this.andmeHaldus = andmeHaldus;
     }
 

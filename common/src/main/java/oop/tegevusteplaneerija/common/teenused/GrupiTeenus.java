@@ -23,6 +23,9 @@ public class GrupiTeenus {
         int id = andmeHaldus.lisaGrupp(grupp);
         grupp.setId(id);
         andmeHaldus.lisaGrupiLiige(grupp, omanik);
+        for (Kasutaja kasutaja : liikmed) {
+            lisaGrupiLiige(grupp, kasutaja);
+        }
         return grupp;
     }
 
@@ -58,7 +61,7 @@ public class GrupiTeenus {
         return andmeHaldus.leiaKasutajaGrupid(kasutajaId);
     }
 
-    public Grupp leiaPersonaalneGrupp(Kasutaja omanik) throws SQLException {
+    public Grupp leiaPersonaalneGrupp(Kasutaja omanik) {
         return andmeHaldus.leiaPersonaalneGrupp(omanik.getId());
     }
 }

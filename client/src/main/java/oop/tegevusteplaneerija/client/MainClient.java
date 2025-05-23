@@ -2,6 +2,7 @@ package oop.tegevusteplaneerija.client;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.*;
+import oop.tegevusteplaneerija.client.util.ClientDBManager;
 import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
 import oop.tegevusteplaneerija.common.mudel.Grupp;
 import oop.tegevusteplaneerija.common.mudel.Kasutaja;
@@ -24,13 +25,17 @@ public class MainClient extends Application {
         launch(args);
     }
 
-    private static AndmeHaldus andmeHaldus;
     private static EventTeenus eventTeenus;
     private static GrupiTeenus grupiTeenus;
     private static KasutajaTeenus kasutajaTeenus;
 
     private static void startDatabase() throws SQLException {
-        andmeHaldus = new AndmeHaldus("client.db");
+        String DB_PATH = "client.db";
+        String SERVER_URL = "localhost:8080";
+        ClientDBManager dbManager = new ClientDBManager(DB_PATH, SERVER_URL, 4);
+        dbManager.init();
+        dbManager.refreshDatabase();
+        AndmeHaldus andmeHaldus = new AndmeHaldus(dbManager);
         eventTeenus = new EventTeenus(andmeHaldus);
         grupiTeenus = new GrupiTeenus(andmeHaldus);
         kasutajaTeenus = new KasutajaTeenus(andmeHaldus);

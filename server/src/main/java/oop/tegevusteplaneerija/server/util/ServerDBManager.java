@@ -11,8 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerDBManager implements DatabaseManager {
-    private final String url;
+public class ServerDBManager extends DatabaseManager {
 
     /**
      * "Madala taseme" objekt, mis initsialiseerib ja suhtleb andmebaasiga.
@@ -20,26 +19,7 @@ public class ServerDBManager implements DatabaseManager {
      * @param dbFilePath andmebaasi faili asukoht
      */
     public ServerDBManager(String dbFilePath) {
-        this.url = "jdbc:sqlite:" + dbFilePath;
-    }
-
-    public void init() throws SQLException {
-        Connection conn = DriverManager.getConnection(url);
-        try {
-            conn.setAutoCommit(false);
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute(SQLStatements.CREATE_EVENTS_TABLE);
-                stmt.execute(SQLStatements.CREATE_KASUTAJAD_TABLE);
-                stmt.execute(SQLStatements.CREATE_GRUPID_TABLE);
-                stmt.execute(SQLStatements.CREATE_GRUPILIIKMED_TABLE);
-            }
-            conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
-        }
+        this.dbPath = "jdbc:sqlite:" + dbFilePath;
     }
 
     public int lisaSündmus(String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk, int grupp)
@@ -285,7 +265,7 @@ public class ServerDBManager implements DatabaseManager {
      */
     private int executeUpdate(String sql, SQLConsumer<PreparedStatement> parameterSetter, boolean returnGeneratedKey)
             throws SQLException {
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DriverManager.getConnection(dbPath);
                 PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             conn.setAutoCommit(false);
             parameterSetter.accept(ps);
@@ -317,7 +297,7 @@ public class ServerDBManager implements DatabaseManager {
      */
     private <T> T executeQuery(String sql, SQLConsumer<PreparedStatement> parameterSetter,
             SQLFunction<ResultSet, T> resultMapper) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DriverManager.getConnection(dbPath);
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             parameterSetter.accept(ps);
             try (ResultSet rs = ps.executeQuery()) {

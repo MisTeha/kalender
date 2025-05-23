@@ -17,4 +17,5 @@ dependencies {
 
 application {
     mainClass.set("oop.tegevusteplaneerija.server.MainServer")
+    applicationDefaultJvmArgs = listOf("--add-opens=java.base/java.time=ALL-UNNAMED")
 }
