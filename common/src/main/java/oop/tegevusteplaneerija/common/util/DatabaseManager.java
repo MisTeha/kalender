@@ -39,9 +39,6 @@ public abstract class DatabaseManager {
 
     public abstract void kustutaSündmus(int eventId) throws SQLException;
 
-    public abstract void uuendaSündmus(int id, String nimi, String kirjeldus, ZonedDateTime algushetk,
-            ZonedDateTime lopphetk, int grupp) throws SQLException;
-
     public abstract int lisaGrupp(String nimi, int omanikId, boolean personal) throws SQLException;
 
     public abstract void kustutaGrupp(int gruppId) throws SQLException;

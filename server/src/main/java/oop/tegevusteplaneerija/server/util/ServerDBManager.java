@@ -32,6 +32,7 @@ public class ServerDBManager extends DatabaseManager {
         executeUpdate(SQLStatements.REMOVE_EVENT, ps -> ps.setInt(1, eventId), false);
     }
 
+    //seda pole mujal implementeeritud, aga jätan alles veel igaks juhuks.
     public void uuendaSündmus(int id, String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk,
                               int grupp) throws SQLException {
         executeUpdate(SQLStatements.UPDATE_EVENT, ps -> {
@@ -112,5 +113,4 @@ public class ServerDBManager extends DatabaseManager {
             return key;
         }
     }
-
 }
