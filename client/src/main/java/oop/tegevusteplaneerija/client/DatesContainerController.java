@@ -28,6 +28,7 @@ public class DatesContainerController {
     private Grupp selectedGroup;
     private GrupiTeenus grupiTeenus;
     private EventTeenus eventTeenus;
+    private oop.tegevusteplaneerija.common.mudel.Kasutaja activeUser;
 
     public void setGroupTeenus(GrupiTeenus grupiTeenus, int userId) {
         this.grupiTeenus = grupiTeenus;
@@ -47,6 +48,10 @@ public class DatesContainerController {
 
     public void setSelectedGroup(Grupp group) {
         this.selectedGroup = group;
+    }
+
+    public void setActiveUser(oop.tegevusteplaneerija.common.mudel.Kasutaja user) {
+        this.activeUser = user;
     }
 
     @FXML
@@ -104,11 +109,13 @@ public class DatesContainerController {
                 con.setLdate(e.getAlgushetk().toLocalDate());
                 con.setParent(this);
                 con.setEventTeenus(eventTeenus);
-                con.setCurrentGroup(selectedGroup);
+                con.setActiveUser(activeUser); // <-- set active user
                 container.getChildren().add(con);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        } else {
+            con.setActiveUser(activeUser); // <-- set active user for existing container
         }
 
         con.addEvent(e);
@@ -116,5 +123,9 @@ public class DatesContainerController {
 
     public void remove(EventDateContainerController c) {
         container.getChildren().remove(c);
+    }
+
+    public GrupiTeenus getGrupiTeenus() {
+        return grupiTeenus;
     }
 }

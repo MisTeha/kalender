@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
-import oop.tegevusteplaneerija.common.mudel.Grupp;
 import oop.tegevusteplaneerija.common.teenused.EventTeenus;
 
 import java.time.LocalDate;
@@ -28,7 +27,8 @@ public class EventDateContainerController extends VBox {
     private DatesContainerController parent;
 
     private oop.tegevusteplaneerija.common.teenused.EventTeenus eventTeenus;
-    private oop.tegevusteplaneerija.common.mudel.Grupp currentGroup;
+
+    private oop.tegevusteplaneerija.common.mudel.Kasutaja activeUser;
 
     public EventDateContainerController() {
         // liigutatud alumisse initialize funktsiooni
@@ -41,8 +41,8 @@ public class EventDateContainerController extends VBox {
         viewsController.setParent(this);
         if (eventTeenus != null)
             viewsController.setEventTeenus(eventTeenus);
-        if (currentGroup != null)
-            viewsController.setCurrentGroup(currentGroup);
+        if (activeUser != null)
+            viewsController.setActiveUser(activeUser);
     }
 
     public void addEvent(CalendarEvent e) {
@@ -52,8 +52,8 @@ public class EventDateContainerController extends VBox {
             this.getChildren().add(viewsController);
             if (eventTeenus != null)
                 viewsController.setEventTeenus(eventTeenus);
-            if (currentGroup != null)
-                viewsController.setCurrentGroup(currentGroup);
+            if (activeUser != null)
+                viewsController.setActiveUser(activeUser);
         }
         events.add(e);
         viewsController.addEvent(e);
@@ -88,10 +88,14 @@ public class EventDateContainerController extends VBox {
         }
     }
 
-    public void setCurrentGroup(Grupp group) {
-        this.currentGroup = group;
+    public void setActiveUser(oop.tegevusteplaneerija.common.mudel.Kasutaja user) {
+        this.activeUser = user;
         if (viewsController != null) {
-            viewsController.setCurrentGroup(group);
+            viewsController.setActiveUser(user);
         }
+    }
+
+    public DatesContainerController getParentController() {
+        return parent;
     }
 }

@@ -16,7 +16,7 @@ public class EventViewsController extends BorderPane {
 
     // --- Database integration ---
     private oop.tegevusteplaneerija.common.teenused.EventTeenus eventTeenus;
-    private oop.tegevusteplaneerija.common.mudel.Grupp currentGroup;
+    private oop.tegevusteplaneerija.common.mudel.Kasutaja activeUser;
 
     public EventViewsController() {
         FXMLLoader loader = new FXMLLoader(EventViewsController.class.getClassLoader().getResource("EventsView.fxml"));
@@ -38,8 +38,8 @@ public class EventViewsController extends BorderPane {
         this.eventTeenus = eventTeenus;
     }
 
-    public void setCurrentGroup(oop.tegevusteplaneerija.common.mudel.Grupp group) {
-        this.currentGroup = group;
+    public void setActiveUser(oop.tegevusteplaneerija.common.mudel.Kasutaja user) {
+        this.activeUser = user;
     }
 
     public void addEvent(CalendarEvent e) {
@@ -50,30 +50,39 @@ public class EventViewsController extends BorderPane {
 
     public void removeEvent(EventWidgetController c) {
         // Remove from DB if possible
-        if (eventTeenus != null && currentGroup != null) {
+        if (eventTeenus != null && activeUser != null) {
             try {
                 var e = c.getEvent();
                 int id = e.getId();
-                // Always create a mudel.CalendarEvent for DB operations
+                var eventGroup = e.getGrupp();
                 var modelEvent = new CalendarEvent(
                         id,
                         e.getNimi(),
                         e.getKirjeldus(),
                         e.getAlgushetk(),
                         e.getLopphetk(),
-                        currentGroup);
+                        eventGroup);
                 if (modelEvent.getId() > 0) {
                     eventTeenus.kustutaSündmus(modelEvent);
                 } else {
-                    // Fallback: try to find by fields (should not happen if IDs are set correctly)
-                    var all = eventTeenus.leiaGrupiSündmused(currentGroup.getId());
-                    for (var ev : all) {
-                        if (ev.getNimi().equals(modelEvent.getNimi()) &&
-                                ev.getKirjeldus().equals(modelEvent.getKirjeldus()) &&
-                                ev.getAlgushetk().equals(modelEvent.getAlgushetk()) &&
-                                ev.getLopphetk().equals(modelEvent.getLopphetk())) {
-                            eventTeenus.kustutaSündmus(ev);
-                            break;
+                    // Fallback: search all groups the user belongs to
+                    if (parent != null && parent.getParentController() != null) {
+                        DatesContainerController datesParent = parent.getParentController();
+                        if (datesParent.getGrupiTeenus() != null) {
+                            java.util.List<oop.tegevusteplaneerija.common.mudel.Grupp> userGroups = datesParent
+                                    .getGrupiTeenus().leiaKasutajaGrupid(activeUser.getId());
+                            for (oop.tegevusteplaneerija.common.mudel.Grupp group : userGroups) {
+                                java.util.List<CalendarEvent> all = eventTeenus.leiaGrupiSündmused(group.getId());
+                                for (CalendarEvent ev : all) {
+                                    if (ev.getNimi().equals(modelEvent.getNimi()) &&
+                                            ev.getKirjeldus().equals(modelEvent.getKirjeldus()) &&
+                                            ev.getAlgushetk().equals(modelEvent.getAlgushetk()) &&
+                                            ev.getLopphetk().equals(modelEvent.getLopphetk())) {
+                                        eventTeenus.kustutaSündmus(ev);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 }

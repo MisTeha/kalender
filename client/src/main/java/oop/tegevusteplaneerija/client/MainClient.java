@@ -13,29 +13,31 @@ import oop.tegevusteplaneerija.common.util.AndmeHaldus;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import oop.tegevusteplaneerija.common.util.DatabaseManager;
 
 import java.sql.SQLException;
-
 import java.io.IOException;
 import java.util.List;
 
 public class MainClient extends Application {
 
+    private String SERVER_URL = "localhost:8080";
+    private String DB_PATH = "client.db";
+
+    private AndmeHaldus andmeHaldus;
+    private EventTeenus eventTeenus;
+    private GrupiTeenus grupiTeenus;
+    private KasutajaTeenus kasutajaTeenus;
+    private ClientDBManager dbManager;
+
     public static void main(String[] args) {
         launch(args);
     }
 
-    private static EventTeenus eventTeenus;
-    private static GrupiTeenus grupiTeenus;
-    private static KasutajaTeenus kasutajaTeenus;
-
-    private static void startDatabase() throws SQLException {
-        String DB_PATH = "client.db";
-        String SERVER_URL = "localhost:8080";
-        ClientDBManager dbManager = new ClientDBManager(DB_PATH, SERVER_URL, 4);
+    private void startDatabase() throws SQLException {
+        dbManager = new ClientDBManager(DB_PATH, SERVER_URL, null);
         dbManager.init();
-        dbManager.refreshDatabase();
-        AndmeHaldus andmeHaldus = new AndmeHaldus(dbManager);
+        andmeHaldus = new AndmeHaldus(dbManager);
         eventTeenus = new EventTeenus(andmeHaldus);
         grupiTeenus = new GrupiTeenus(andmeHaldus);
         kasutajaTeenus = new KasutajaTeenus(andmeHaldus);
@@ -44,15 +46,37 @@ public class MainClient extends Application {
     @Override
     public void start(Stage primaryStage) throws SQLException, IOException {
         startDatabase();
-        // avab niiöelda demokasutaja, kuna pole veel implementeeritud kasutaja
-        // tegemist/valimist.
-        Kasutaja kasutaja = kasutajaTeenus.leiaKasutaja(1);
-        if (kasutaja == null) {
-            kasutaja = kasutajaTeenus.looKasutaja("DemoKasutaja");
-            kasutajaTeenus.lisaPersonaalneGrupp(kasutaja);
+        showLoginScreen(primaryStage);
+    }
+
+    private void showLoginScreen(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("LoginScreen.fxml"));
+        Pane loginPane = loader.load();
+        LoginController controller = loader.getController();
+        if (controller == null) {
+            controller = (LoginController) loginPane.getProperties().get("fx:controller");
         }
+        controller.setDbManager(dbManager);
+        controller.setLoginCallback(user -> {
+            try {
+                showMainUI(stage, user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        Scene scene = new Scene(loginPane);
+        stage.setScene(scene);
+        stage.setTitle("Login");
+        stage.setWidth(400);
+        stage.setHeight(300);
+        stage.show();
+    }
+
+    private void showMainUI(Stage primaryStage, Kasutaja kasutaja) throws SQLException, IOException {
+        dbManager.setUserId(kasutaja.getId());
+        Grupp huh = dbManager.leiaPersonaalneGrupp(4);
+        Grupp huh2 = dbManager.leiaPersonaalneGrupp(3);
         Grupp personalGrupp = grupiTeenus.leiaPersonaalneGrupp(kasutaja);
-        // Näidissündmused juhul kui on nn esimene käivitus või kalender tühi.
         List<CalendarEvent> events = eventTeenus.leiaKõikSündmused();
         if (events.isEmpty()) {
             CalendarEvent event1 = new CalendarEvent("Client Meeting", "Discuss UI design",
@@ -71,10 +95,10 @@ public class MainClient extends Application {
         cont.setEventTeenus(eventTeenus);
         cont.setGroupTeenus(grupiTeenus, kasutaja.getId());
         cont.setSelectedGroup(personalGrupp);
+        cont.setActiveUser(kasutaja);
         Scene scene = new Scene(dateContainer);
         dateContainer.prefHeightProperty().bind(scene.heightProperty());
         dateContainer.prefWidthProperty().bind(scene.widthProperty());
-
         events.forEach(cont::addEvent);
         primaryStage.setTitle("Calendar Client");
         primaryStage.setScene(scene);
