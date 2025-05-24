@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Grupp {
     private String nimi;
-    private Integer id; //null enne andmebaasi lisamist
+    private Integer id; // null enne andmebaasi lisamist
     private final List<Kasutaja> liikmed;
     private final Kasutaja omanik;
     private final boolean personal;
@@ -25,7 +25,6 @@ public class Grupp {
     public Grupp(String nimi, Kasutaja omanik, boolean personal) {
         this(nimi, omanik, new ArrayList<>(), personal);
     }
-
 
     /**
      * Tagastab <i>immutable</i> listi liikmetest.
@@ -58,5 +57,20 @@ public class Grupp {
 
     public boolean isPersonal() {
         return personal;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Grupp grupp = (Grupp) o;
+        return id != null && id.equals(grupp.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
