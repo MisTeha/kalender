@@ -32,9 +32,9 @@ public class ServerDBManager extends DatabaseManager {
         executeUpdate(SQLStatements.REMOVE_EVENT, ps -> ps.setInt(1, eventId), false);
     }
 
-    //seda pole mujal implementeeritud, aga jätan alles veel igaks juhuks.
+    // seda pole mujal implementeeritud, aga jätan alles veel igaks juhuks.
     public void uuendaSündmus(int id, String nimi, String kirjeldus, ZonedDateTime algushetk, ZonedDateTime lopphetk,
-                              int grupp) throws SQLException {
+            int grupp) throws SQLException {
         executeUpdate(SQLStatements.UPDATE_EVENT, ps -> {
             ps.setString(1, nimi);
             ps.setString(2, kirjeldus);
@@ -97,7 +97,7 @@ public class ServerDBManager extends DatabaseManager {
     private int executeUpdate(String sql, SQLConsumer<PreparedStatement> parameterSetter, boolean returnGeneratedKey)
             throws SQLException {
         try (Connection conn = DriverManager.getConnection(dbPath);
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             conn.setAutoCommit(false);
             parameterSetter.accept(ps);
             ps.executeUpdate();
@@ -113,4 +113,5 @@ public class ServerDBManager extends DatabaseManager {
             return key;
         }
     }
+
 }
