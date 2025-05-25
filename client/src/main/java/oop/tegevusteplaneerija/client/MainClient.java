@@ -13,7 +13,6 @@ import oop.tegevusteplaneerija.common.util.AndmeHaldus;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import oop.tegevusteplaneerija.common.util.DatabaseManager;
 
 import java.sql.SQLException;
 import java.io.IOException;
@@ -92,14 +91,12 @@ public class MainClient extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("DatesContainer.fxml"));
         Pane dateContainer = loader.load();
         DatesContainerController cont = loader.getController();
-        cont.setEventTeenus(eventTeenus);
-        cont.setGroupTeenus(grupiTeenus, kasutaja.getId());
+        cont.setDBManager(dbManager);
         cont.setSelectedGroup(personalGrupp);
         cont.setActiveUser(kasutaja);
         Scene scene = new Scene(dateContainer);
         dateContainer.prefHeightProperty().bind(scene.heightProperty());
         dateContainer.prefWidthProperty().bind(scene.widthProperty());
-        events.forEach(cont::addEvent);
         primaryStage.setTitle("Calendar Client");
         primaryStage.setScene(scene);
         primaryStage.setHeight(600);

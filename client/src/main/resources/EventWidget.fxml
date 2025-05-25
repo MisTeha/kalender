@@ -9,6 +9,7 @@
         <VBox>
             <Label fx:id="titleLabel" minWidth="100" />
             <Label fx:id="descLabel" minWidth="100" />
+            <Label fx:id="groupLabel" minWidth="100" style="-fx-font-size: 10; -fx-text-fill: #888;" />
         </VBox>
         <Region HBox.hgrow="ALWAYS" />
         <Button fx:id="doneButton" onAction="#remove">

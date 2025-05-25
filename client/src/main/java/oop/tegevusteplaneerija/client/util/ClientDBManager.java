@@ -275,7 +275,7 @@ public class ClientDBManager extends DatabaseManager {
             user.put("nimi", nimi);
             String json = gson.toJson(user);
             String responseBody = sendRequest("/users", HTTPMeetod.POST, json);
-            refreshDatabase();
+            if (userId != null) refreshDatabase();
             if (isJsonObject(responseBody)) {
                 Kasutaja created = gson.fromJson(responseBody, Kasutaja.class);
                 return created != null ? created.getId() : 0;

@@ -69,7 +69,7 @@ public class LoginController {
             }
             int id = dbManager.lisaKasutaja(username);
             if (id > 0) {
-                Kasutaja newUser = dbManager.leiaKasutaja(username);
+                Kasutaja newUser = new Kasutaja(id, username, null);
                 errorLabel.setText("");
                 if (callback != null)
                     callback.onLogin(newUser);

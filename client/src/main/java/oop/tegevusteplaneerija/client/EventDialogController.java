@@ -1,17 +1,21 @@
 package oop.tegevusteplaneerija.client;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import oop.tegevusteplaneerija.common.mudel.CalendarEvent;
 import oop.tegevusteplaneerija.common.mudel.Grupp;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 public class EventDialogController {
     @FXML
@@ -35,11 +39,38 @@ public class EventDialogController {
     @FXML
     private Spinner<Integer> startH, startM, startS, endH, endM, endS;
 
-    private CalendarEvent result;
-    private Grupp grupp;
+    @FXML
+    private ComboBox<Grupp> groupComboBox;
 
-    public void setGrupp(Grupp grupp) {
-        this.grupp = grupp;
+    private CalendarEvent result;
+
+    public void setGroups(List<Grupp> groups, Grupp selected) {
+        groupComboBox.setItems(FXCollections.observableArrayList(groups));
+        if (selected != null)
+            groupComboBox.getSelectionModel().select(selected);
+    }
+
+    @FXML
+    public void initialize() {
+        groupComboBox.setCellFactory(new Callback<>() {
+            @Override
+            public javafx.scene.control.ListCell<Grupp> call(javafx.scene.control.ListView<Grupp> lv) {
+                return new javafx.scene.control.ListCell<>() {
+                    @Override
+                    protected void updateItem(Grupp item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty || item == null ? "" : item.getNimi());
+                    }
+                };
+            }
+        });
+        groupComboBox.setButtonCell(new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(Grupp item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getNimi());
+            }
+        });
     }
 
     @FXML
@@ -59,10 +90,11 @@ public class EventDialogController {
         LocalDate end = endDate.getValue();
         ZonedDateTime endDate = end.atTime(endH.getValue(), endM.getValue(), endS.getValue())
                 .atZone(ZoneId.systemDefault());
-        if (grupp == null) {
+        Grupp selected = groupComboBox.getSelectionModel().getSelectedItem();
+        if (selected == null) {
             result = null;
         } else {
-            result = new CalendarEvent(title, desc, startDate, endDate, grupp);
+            result = new CalendarEvent(title, desc, startDate, endDate, selected);
         }
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();

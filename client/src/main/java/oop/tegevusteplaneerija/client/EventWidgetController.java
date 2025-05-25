@@ -11,7 +11,7 @@ import java.io.IOException;
 public class EventWidgetController extends VBox {
 
     @FXML
-    private Label titleLabel, descLabel;
+    private Label titleLabel, descLabel, groupLabel;
 
     private EventViewsController parent;
 
@@ -39,6 +39,7 @@ public class EventWidgetController extends VBox {
         titleLabel.setText(
                 "%s: %s to %s".formatted(e.getNimi(), e.getAlgushetk().toLocalTime(), e.getLopphetk().toLocalTime()));
         descLabel.setText(e.getKirjeldus());
+        groupLabel.setText(e.getGrupp() != null ? e.getGrupp().getNimi() : "");
         this.e = e;
         this.parent = par;
     }
