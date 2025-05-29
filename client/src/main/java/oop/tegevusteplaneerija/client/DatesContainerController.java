@@ -214,10 +214,11 @@ public class DatesContainerController {
     }
 
     public void addEventToDatabase(CalendarEvent e) {
-        if (eventTeenus != null && selectedGroup != null && (e.getId() < 0)) {
+        if (eventTeenus != null && (e.getGrupp() != null) && (e.getId() < 0)) {
             try {
+                // Use the group from the event, not always selectedGroup
                 var dbEvent = new CalendarEvent(e.getNimi(), e.getKirjeldus(), e.getAlgushetk(), e.getLopphetk(),
-                        selectedGroup);
+                        e.getGrupp());
                 eventTeenus.lisaSündmus(dbEvent);
             } catch (Exception ex) {
                 ex.printStackTrace();
