@@ -93,6 +93,7 @@ public class MainClient extends Application {
         DatesContainerController cont = loader.getController();
         cont.setDBManager(dbManager);
         cont.setSelectedGroup(personalGrupp);
+        cont.setKasutajaTeenus(kasutajaTeenus);
         cont.setActiveUser(kasutaja);
         Scene scene = new Scene(dateContainer);
         dateContainer.prefHeightProperty().bind(scene.heightProperty());
